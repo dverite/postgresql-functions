@@ -1,0 +1,29 @@
+<h2 id="global_search">global_search</h2>
+<pre><code>FUNCTION global_search(
+    search_term text,
+    param_tables text[] default &#39;{}&#39;,
+    param_schemas text[] default &#39;{public}&#39;,
+    progress text default null -- &#39;tables&#39;,&#39;hits&#39;,&#39;all&#39;
+) RETURNS table(schemaname text, tablename text, columnname text, rowctid tid)</code></pre>
+<p><code>global_search</code> is a plpgsql function that finds <code>search_term</code> in all tables of the public schema, or in a subset of tables delimited by the <code>param_tables</code> or <code>param_schemas</code> parameters.</p>
+<p>The progress is optionally reported with <code>raise info</code> messages, immediately available to the caller, contrary to the function result that is available only on function completion. When <code>progress</code> is <code>tables</code> or <code>all</code>, each table searched into is reported. When <code>progress</code> is <code>hits</code> or <code>all</code>, each hit is reported.</p>
+<p>In all cases, the hits are returned by the function in the form of a table-like value: <code>(schemaname text, tablename text, columnname text, rowctid tid)</code>.</p>
+<p>Example in psql:</p>
+<pre><code>test=&gt; create table tst(t text);
+CREATE TABLE
+
+test=&gt; insert into tst values(&#39;foo&#39;),(&#39;bar&#39;),(&#39;baz&#39;);
+INSERT 0 3
+
+test=&gt; select * from global_search(&#39;bar&#39;);
+ schemaname | tablename | columnname | rowctid 
+------------+-----------+------------+---------
+ public     | tst       | t          | (0,2)
+(1 row)
+
+test=&gt; select * from tst where ctid=&#39;(0,2)&#39;;
+  t  
+-----
+ bar
+(1 row)</code></pre>
+<p>Warning: <code>ctid</code> are transient, since rows can be relocated physically. Use the <code>REPEATABLE READ</code> transaction isolation mode to ensure that the corresponding version of the row is kept around until you're done with the <code>ctid</code>.</p>
