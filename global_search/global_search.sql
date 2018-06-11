@@ -1,14 +1,13 @@
 CREATE OR REPLACE FUNCTION global_search(
-    search_term text,
+    search_re text,
     param_tables text[] default '{}',
     param_schemas text[] default '{public}',
     progress text default null -- 'tables','hits','all'
 )
-RETURNS table(schemaname text, tablename text, columnname text, rowctid tid)
+RETURNS table(schemaname text, tablename text, columnname text, columnvalue text, rowctid tid)
 AS $$
 declare
   query text;
-  hit boolean;
 begin
   FOR schemaname,tablename IN
       SELECT table_schema, table_name
@@ -22,10 +21,10 @@ begin
          schemaname, tablename);
     END IF;
 
-    query := format('SELECT ctid FROM %I.%I AS t WHERE strpos(cast(t.* as text), %L) > 0',
+    query := format('SELECT ctid FROM %I.%I AS t WHERE cast(t.* as text) ~ %L',
 	    schemaname,
 	    tablename,
-	    search_term);
+	    search_re);
     FOR rowctid IN EXECUTE query
     LOOP
       FOR columnname IN
@@ -34,13 +33,13 @@ begin
 	  WHERE table_name=tablename
 	    AND table_schema=schemaname
       LOOP
-	query := format('SELECT true FROM %I.%I WHERE cast(%I as text)=%L AND ctid=%L',
-	  schemaname, tablename, columnname, search_term, rowctid);
-        EXECUTE query INTO hit;
-	IF hit THEN
+	query := format('SELECT %I FROM %I.%I WHERE cast(%I as text) ~ %L AND ctid=%L',
+	  columnname, schemaname, tablename, columnname, search_re, rowctid);
+        EXECUTE query INTO columnvalue;
+	IF columnvalue IS NOT NULL THEN
 	  IF (progress in ('hits', 'all')) THEN
-	    raise info '%', format('Found in %I.%I.%I at ctid %s',
-		   schemaname, tablename, columnname, rowctid);
+	    raise info '%', format('Found %L in %I.%I.%I at ctid %s',
+		   columnvalue, schemaname, tablename, columnname, rowctid);
 	  END IF;
 	  RETURN NEXT;
 	END IF;
