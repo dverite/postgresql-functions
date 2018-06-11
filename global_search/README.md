@@ -47,3 +47,18 @@ Warning: `ctid` are transient, since rows can be relocated
 physically. Use the `REPEATABLE READ` transaction isolation mode to
 ensure that the corresponding version of the row is kept around until you're done
 with the `ctid`.
+
+## global_regexp_search
+
+```
+FUNCTION global_regexp_search(
+    search_re text,
+    param_tables text[] default '{}',
+    param_schemas text[] default '{public}',
+    progress text default null -- 'tables','hits','all'
+) RETURNS table(schemaname text, tablename text, columnname text, columnvalue text, rowctid tid)
+```
+
+This function is like `global_search` except that the search term
+is a regular expression against which fields contents are matched with the
+`~` operator, and that the values inside columns are part of the returned data.
