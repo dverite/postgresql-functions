@@ -2,6 +2,12 @@
 
 A repository of custom PostgreSQL functions and extensions.
 
+## diff_tables
+A simple plpgsql function that takes two table names (through the
+`regclass` type), builds a query comparing their contents, runs
+it, and returns a set of diff-like results with the rows that differ.
+It does not require a primary key on tables to compare.
+
 ## global_search / global_regexp_search
 Two plpgsql functions that find occurrences of a string or
 a regular expression in all or some of the tables of an entire
