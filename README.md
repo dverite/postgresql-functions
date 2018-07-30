@@ -8,6 +8,13 @@ A simple plpgsql function that takes two table names (through the
 it, and returns a set of diff-like results with the rows that differ.
 It does not require a primary key on tables to compare.
 
+## dynamic_pivot
+Return a CURSOR pointing to pivoted results of a query passed as the
+1st parameter, with sorted headers passed as a query as the 2nd
+parameter.  
+See https://postgresql.verite.pro/blog/2018/06/19/crosstab-pivot.html for
+a lot of context about this function.
+
 ## global_search / global_regexp_search
 Two plpgsql functions that find occurrences of a string or
 a regular expression in all or some of the tables of an entire
