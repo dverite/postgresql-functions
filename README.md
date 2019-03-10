@@ -36,3 +36,6 @@ A plpgsql function that returns the size of a given large object.
 ### lo_digest
 A plperlu function that returns the digest (hash output) of a large
 object for any hash supported by perl's Digest module.
+
+## tsearch/dict_maxlen
+A text search dictionary to filter out tokens longer than a given length.

@@ -1,0 +1,5 @@
+# dict_maxlen extension
+comment = 'text search template for a dictionary filtering out long words'
+default_version = '1.0'
+module_pathname = '$libdir/dict_maxlen'
+relocatable = true
