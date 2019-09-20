@@ -37,5 +37,8 @@ A plpgsql function that returns the size of a given large object.
 A plperlu function that returns the digest (hash output) of a large
 object for any hash supported by perl's Digest module.
 
+## strings/parse_option
+A simple function to parse name=value settings.
+
 ## tsearch/dict_maxlen
 A text search dictionary to filter out tokens longer than a given length.
