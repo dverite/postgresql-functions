@@ -40,5 +40,11 @@ object for any hash supported by perl's Digest module.
 ## strings/parse_option
 A simple function to parse name=value settings.
 
+## strings/plperl/multi_replace
+Replace strings by other strings within a larger text, with
+Perl s// operator, in a single pass.
+Each string in the first array is replaced by the element at the same
+index in the second array.
+
 ## tsearch/dict_maxlen
 A text search dictionary to filter out tokens longer than a given length.
