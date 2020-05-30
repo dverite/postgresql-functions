@@ -11,8 +11,13 @@ declare
   hit boolean;
 begin
   FOR schemaname,tablename IN
-      SELECT table_schema, table_name
-      FROM information_schema.tables t
+      SELECT t.table_schema, t.table_name
+      FROM   information_schema.tables t
+	JOIN information_schema.table_privileges p ON
+	  (t.table_name=p.table_name AND t.table_schema=p.table_schema
+	      AND p.privilege_type='SELECT')
+	JOIN information_schema.schemata s ON
+	  (s.schema_name=t.table_schema)
       WHERE (t.table_name=ANY(param_tables) OR param_tables='{}')
         AND t.table_schema=ANY(param_schemas)
         AND t.table_type='BASE TABLE'
