@@ -2,10 +2,14 @@
  Return a CURSOR pointing to pivoted results of a query
  passed as the 1st parameter, with sorted headers passed as a query
  as the 2nd parameter.
+ The cursor name can be passed as an optional 3rd parameter, or a name
+ will be automatically assigned.
  See https://postgresql.verite.pro/blog/2018/06/19/crosstab-pivot.html
  for a lot of context about this function.
 */
-CREATE FUNCTION dynamic_pivot(central_query text, headers_query text)
+CREATE FUNCTION dynamic_pivot(central_query text,
+			      headers_query text,
+			      INOUT cname refcursor default null)
  RETURNS refcursor AS
 $$
 DECLARE
@@ -17,7 +21,6 @@ DECLARE
   query text;
   j json;
   r record;
-  curs refcursor;
   i int:=1;
 BEGIN
   -- find the column names of the source query
@@ -49,8 +52,9 @@ BEGIN
 	   central_query,
 	   left_column);
 
-  -- open the cursor so the caller can FETCH right away
-  OPEN curs FOR execute query;
-  RETURN curs;
+  -- open the cursor so the caller can FETCH right away.
+  -- if cname is not null it will be used as the name of the cursor,
+  -- otherwise a name "<unnamed portal unique-number>" will be generated.
+  OPEN cname FOR execute query;
 END
 $$ LANGUAGE plpgsql;
