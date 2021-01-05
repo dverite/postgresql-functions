@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2018 Daniel VERITE
+ * Copyright (c) 2015-2020 Daniel VERITE
  * BSD license, see README.md
  */
 
@@ -41,16 +41,16 @@ Datum
 hamming_weight_bytea(PG_FUNCTION_ARGS)
 {
 	bytea *v = PG_GETARG_BYTEA_PP(0);
-	int count=0;
-	int len,i;
+	int64 count = 0;
+	int len, i;
 	unsigned char* buf;
 
-	len = VARSIZE_ANY_EXHDR(v);
+	len = VARSIZE_ANY_EXHDR(v); /* should be lower than 2^30 */
 	buf = (unsigned char*)VARDATA_ANY(v);
 	for (i=0; i<len; i++) {
 		count += bitcount[buf[i]&0xff];
 	}
-	PG_RETURN_INT32(count);
+	PG_RETURN_INT64(count);
 }
 
 /* SQL function: hamming_weight(int4) returns int4 */
