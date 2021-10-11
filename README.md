@@ -27,7 +27,8 @@ messages.
 
 ## hamming_weight
 C functions that return the number of bits set to `1` in a bytea, int
-or bigint value.
+or bigint value. The `bytea` variant is available as a built-in function
+(named `bit_count`) since PostgreSQL 14.
 
 ## large_objects
 ### lo_size
