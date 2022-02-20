@@ -49,3 +49,6 @@ index in the second array.
 
 ## tsearch/dict_maxlen
 A text search dictionary to filter out tokens longer than a given length.
+
+## psql-cli
+psqlrc declarations, companion scripts, tricks for the psql command-line interpreter.
