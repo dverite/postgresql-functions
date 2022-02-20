@@ -1,0 +1,14 @@
+-- psqlrc stanza
+-- for psql version 12 and newer
+
+-- Declare the :expand macro.
+-- This macro calls \gdesc with the query in the buffer, puts the
+-- result in a csv temporary file, and invoke a custom editor to
+-- transform the query buffer using this result and SQL comments
+-- inside the query
+-- see psql-edit-replace.sh for a custom editor implementation.
+
+-- EDIT THIS with your preferred path
+\setenv PSQL_EDITOR ~/bin/psql-edit-replace.sh
+
+\set expand ' \\set _tmpstruct `tempfile` \\setenv PSQL_TMP_STRUCT :_tmpstruct \\set QUIET on \\pset format csv \\x off \\pset tuples_only off \\o :_tmpstruct \\gdesc \\o \\pset format aligned \\set QUIET off \\e \\unset _tmpstruct'
