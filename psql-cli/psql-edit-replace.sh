@@ -35,17 +35,19 @@ my $lines = <$fi>;   # 1st line of query
 
 my $rx = qr{^(.*)\*\s*/\*expand\*/(.*)$};
 if ($lines =~ $rx) {
-  # expand all column names
+  # expand to all columns
   $lines = "$1" . expand($cols, undef, undef) . "$2";
 }
 else {
   $rx = qr{^(.*)\*\s*/\*except:(.*)\*/(.*)$};
   if ($lines =~ $rx) {
+    # expand to all columns except those listed
     $lines = "$1" . expand($cols, 0, $2) . "$3";
   }
   else {
     $rx = qr{^(.*)\*\s*/\*except-type:(.*)\*/(.*)$};
     if ($lines =~ $rx) {
+      # expand to all column except for the types listed
       $lines = "$1" . expand($cols, 1, $2) . "$3";
     }
   }
