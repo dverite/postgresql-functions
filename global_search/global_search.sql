@@ -27,7 +27,7 @@ begin
          schemaname, tablename);
     END IF;
 
-    query := format('SELECT ctid FROM %I.%I AS t WHERE strpos(cast(t.* as text), %L) > 0',
+    query := format('SELECT ctid FROM ONLY %I.%I AS t WHERE strpos(cast(t.* as text), %L) > 0',
 	    schemaname,
 	    tablename,
 	    search_term);
@@ -39,7 +39,7 @@ begin
 	  WHERE table_name=tablename
 	    AND table_schema=schemaname
       LOOP
-	query := format('SELECT true FROM %I.%I WHERE cast(%I as text)=%L AND ctid=%L',
+	query := format('SELECT true FROM ONLY %I.%I WHERE cast(%I as text)=%L AND ctid=%L',
 	  schemaname, tablename, columnname, search_term, rowctid);
         EXECUTE query INTO hit;
 	IF hit THEN

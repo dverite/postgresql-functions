@@ -26,7 +26,7 @@ begin
          schemaname, tablename);
     END IF;
 
-    query := format('SELECT ctid FROM %I.%I AS t WHERE cast(t.* as text) ~ %L',
+    query := format('SELECT ctid FROM ONLY %I.%I AS t WHERE cast(t.* as text) ~ %L',
 	    schemaname,
 	    tablename,
 	    search_re);
@@ -38,7 +38,7 @@ begin
 	  WHERE table_name=tablename
 	    AND table_schema=schemaname
       LOOP
-	query := format('SELECT %I FROM %I.%I WHERE cast(%I as text) ~ %L AND ctid=%L',
+	query := format('SELECT %I FROM ONLY %I.%I WHERE cast(%I as text) ~ %L AND ctid=%L',
 	  columnname, schemaname, tablename, columnname, search_re, rowctid);
         EXECUTE query INTO columnvalue;
 	IF columnvalue IS NOT NULL THEN
