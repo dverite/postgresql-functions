@@ -11,15 +11,17 @@ declare
 begin
   FOR schemaname,tablename IN
       SELECT t.table_schema, t.table_name
-      FROM   information_schema.tables t
-	JOIN information_schema.table_privileges p ON
-	  (t.table_name=p.table_name AND t.table_schema=p.table_schema
-	      AND p.privilege_type='SELECT')
+        FROM information_schema.tables t
 	JOIN information_schema.schemata s ON
 	  (s.schema_name=t.table_schema)
       WHERE (t.table_name=ANY(param_tables) OR param_tables='{}')
         AND t.table_schema=ANY(param_schemas)
         AND t.table_type='BASE TABLE'
+	AND EXISTS (SELECT 1 FROM information_schema.table_privileges p
+	  WHERE p.table_name=t.table_name
+	    AND p.table_schema=t.table_schema
+	    AND p.privilege_type='SELECT'
+	)
   LOOP
     IF (progress in ('tables','all')) THEN
       raise info '%', format('Searching globally in table: %I.%I',
