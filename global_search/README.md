@@ -179,7 +179,7 @@ That sort of query can be useful when exploring the catalogs.
 
 Using an ICU collation for advanced non-bitwise equality tests.
 
-```sql
+```
 -- create a collation that ignores accents and case
 => CREATE COLLATION nd (
   provider = 'icu',
@@ -187,7 +187,7 @@ Using an ICU collation for advanced non-bitwise equality tests.
   deterministic = false
 );
 
-=> CREATE or replace FUNCTION pg_temp.ci_equal(text,text)
+=> CREATE FUNCTION pg_temp.ci_equal(text,text)
  returns boolean as
 'select $1=$2 collate "nd"'
 language sql;
