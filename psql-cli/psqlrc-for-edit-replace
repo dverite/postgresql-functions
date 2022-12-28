@@ -11,4 +11,4 @@
 -- EDIT THIS with your preferred path
 \setenv PSQL_EDITOR ~/bin/psql-edit-replace.sh
 
-\set expand ' \\set _tmpstruct `tempfile` \\setenv PSQL_TMP_STRUCT :_tmpstruct \\set QUIET on \\pset format csv \\x off \\pset tuples_only off \\o :_tmpstruct \\gdesc \\o \\pset format aligned \\set QUIET off \\e \\unset _tmpstruct'
+\set expand ' \\set _tmpstruct `mktemp` \\setenv PSQL_TMP_STRUCT :_tmpstruct \\set QUIET on \\pset format csv \\x off \\pset tuples_only off \\o :_tmpstruct \\gdesc \\o \\pset format aligned \\set QUIET off \\e \\unset _tmpstruct'
