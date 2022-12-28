@@ -2,11 +2,21 @@
 
 # A custom editor for psql that pre-processes the query string
 # to replace "* /* special comment */" with a list of columns.
+# The replacement options are:
+#  * /*expand*/ : this text will be replaced by the list of columns of the query.
+#  * /*except:col1,col2,...*/: this text will be replaced by the list of columns of the query, except those listed.
+#  * /*except-type:bytea,jsonb,...*/ : this text will be replaced by the list of columns of the query, except those of the types listed.
+
+# Example: SELECT * /*expand*/ FROM users JOIN posts USING(user_id) :expand
+# (see the macro definition of :expand in psqlrc-for-edit-replace
+#  or https://postgresql.verite.pro/blog/2022/02/21/psql-hack-select-except.html
+#  for detailed explanations)
+
 # The columns are passed in a temporary file pointed to by
 # the PSQL_TMP_STRUCT environment variable.
 
 # Set up PSQL_EDITOR to point to that script.
-# See the macro invocation in psqlrc-for-edit-replace
+
 
 read -r line1 < "$1"
 rx='\*\s*/\*(expand|except:|except-type:).*\*/'
