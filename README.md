@@ -16,8 +16,8 @@ See https://postgresql.verite.pro/blog/2018/06/19/crosstab-pivot.html for
 a lot of context about this function.
 
 ## global_search / global_match
-Two plpgsql functions that find occurrences of a string or
-more generally any kind of text-based matching in all or some of the
+Two plpgsql functions that find occurrences of a string or more
+generally perform any kind of text-based matching in all or some of the
 tables of an entire database.
 It returns the table, column and `ctid` of the rows
 containing the value, and the value itself in the case of `global_match`.
