@@ -53,9 +53,9 @@ with the `ctid`.
 ```
 FUNCTION global_match(
     search_term text,
-    comparator regproc default 'texteq',   -- comparison function
-    tables text[] default '{}',
-    schemas text[] default '{public}',
+    comparator regproc default 'pg_catalog.texteq',   -- comparison function
+    tables text[] default null,
+    schemas text[] default null,
     progress text default null -- 'tables','hits','all'
 ) RETURNS table(schemaname text, tablename text, columnname text, columnvalue text, rowctid tid)
 ```
@@ -63,7 +63,10 @@ FUNCTION global_match(
 This function is a generalized version of `global_search` that takes the OID
 of a comparison function as the argument, rather than just testing for equality.
 The result set also include the column values that match (`columnvalue`).
-All columns of all tables matching the `tables` and `schemas` parameters are scanned.
+The list of schemas to scan by default are those accessible through the current `search_path`,
+not including `pg_catalog`.
+All columns of all tables matching the `tables` and `schemas` parameters are tested
+against the search term.
 
 The comparison function must accept two `text` arguments and return a
 `boolean` value (`true` when there's a match).

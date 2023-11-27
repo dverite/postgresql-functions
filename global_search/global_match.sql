@@ -1,8 +1,8 @@
 CREATE OR REPLACE FUNCTION global_match(
     search_term text,
-    comparator regproc default 'texteq',   -- comparison function
-    tables text[] default '{}',
-    schemas text[] default '{public}',
+    comparator regproc default 'pg_catalog.texteq',   -- comparison function
+    tables text[] default null,
+    schemas text[] default null,
     progress text default null -- 'tables', 'hits', 'all'
 )
 RETURNS table(schemaname text, tablename text, columnname text, columnvalue text, rowctid tid)
@@ -16,12 +16,17 @@ BEGIN
     WHERE p.oid = comparator
   INTO func_schema_name, func_name;
 
+  IF schemas IS NULL THEN
+    -- by default, exclude pg_catalog and non-readable schemas
+    schemas := current_schemas(false);
+  END IF;
+
   FOR schemaname,tablename IN
       SELECT t.table_schema, t.table_name
         FROM information_schema.tables t
 	JOIN information_schema.schemata s ON
 	  (s.schema_name=t.table_schema)
-      WHERE (t.table_name=ANY(tables) OR tables='{}')
+      WHERE (t.table_name=ANY(tables) OR tables is null)
         AND t.table_schema=ANY(schemas)
         AND t.table_type='BASE TABLE'
 	AND EXISTS (SELECT 1 FROM information_schema.table_privileges p
