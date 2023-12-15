@@ -77,9 +77,6 @@ BEGIN
 	  RAISE INFO '%', format('Found in %I.%I.%I at ctid %s',
 	     schemaname, tablename, columnname, rowctid);
 	END IF;
-	IF (max_width>=0 AND length(columnvalue)>max_width) THEN
-	  columnvalue := left(columnvalue, max_width);
-	END IF;
 	RETURN NEXT;
       END LOOP;
     END LOOP;
