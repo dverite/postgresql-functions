@@ -1,3 +1,9 @@
+/*
+ * Return the creation date of a database based on its directory.
+ * Requires superuser privileges.
+ * Example:
+ *  SELECT datname, db_creation_date(oid) FROM pg_database;
+ */
 CREATE FUNCTION db_creation_date(oid) RETURNS timestamptz as $$
   my $oid=shift;
   my $rv = spi_exec_query("SELECT setting FROM pg_settings WHERE name='data_directory'")
