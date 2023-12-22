@@ -15,12 +15,12 @@ parameter.
 See https://postgresql.verite.pro/blog/2018/06/19/crosstab-pivot.html for
 a lot of context about this function.
 
-## global_search / global_match
-Two plpgsql functions that find occurrences of a string or more
+## global_search
+A plpgsql function that finds occurrences of a string or more
 generally perform any kind of text-based matching in all or some of the
 tables of an entire database.
-It returns the table, column and `ctid` of the rows
-containing the value, and the value itself in the case of `global_match`.
+It returns the table, column name, `ctid` and column's value of the rows
+that match.
 The search can be limited to an array of tables and/or of
 schemas. Progress is optionally reported by emitting `raise info`
 messages.
