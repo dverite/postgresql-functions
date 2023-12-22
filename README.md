@@ -2,6 +2,11 @@
 
 A repository of custom PostgreSQL functions and extensions.
 
+## admin/db\_creation\_date.sql
+A plperlu function returning the creation date of a database,
+based on the creation time of the database directory
+under `$PGATA/base`.
+
 ## diff_tables
 A simple plpgsql function that takes two table names (through the
 `regclass` type), builds a query comparing their contents, runs
