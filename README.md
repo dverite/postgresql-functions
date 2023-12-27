@@ -52,6 +52,10 @@ Perl s// operator, in a single pass.
 Each string in the first array is replaced by the element at the same
 index in the second array.
 
+## strings/utf8_truncate
+Truncate an UTF-8 string to a given number of bytes, respecting the
+constraint that any multibyte sequence at the end must be complete.
+
 ## tsearch/dict_maxlen
 A text search dictionary to filter out tokens longer than a given length.
 
