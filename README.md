@@ -2,8 +2,8 @@
 
 A repository of custom PostgreSQL functions and extensions.
 
-## admin/db\_creation\_date.sql
-A plperlu function returning the creation date of a database,
+## admin/db\_creation\_date
+A `plperlu` function returning the creation date of a database,
 based on the creation time of the database directory
 under `$PGATA/base`.
 
@@ -21,7 +21,7 @@ See https://postgresql.verite.pro/blog/2018/06/19/crosstab-pivot.html for
 a lot of context about this function.
 
 ## global_search
-A plpgsql function that finds occurrences of a string or more
+A `plpgsql` function that finds occurrences of a string or more
 generally perform any kind of text-based matching in all or some of the
 tables of an entire database.
 It returns the table, column name, `ctid` and column's value of the rows
