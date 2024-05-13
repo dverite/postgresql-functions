@@ -50,3 +50,41 @@ function psql_quit
 {
     echo '\q' >&${PSQL[1]}
 }
+
+# Takes a list of queries to run in a transaction
+# Retry the entire transaction if a transient error
+# occurs
+function retriable_transaction
+{
+  while true
+  do
+    psql_command "BEGIN;"
+    for query in "$@"
+    do
+      results=$(psql_command "$query")
+      # check for errors
+      sqlstate=$(psql_command '\echo :SQLSTATE')
+      case "$sqlstate" in
+	00000)
+	  echo "$results"   # output results of $query
+	  ;;
+	57014 | 40001 | 40P01)
+	  # Rollback and retry on
+	  # query canceled, or serialization failure, or deadlock
+	  # see https://www.postgresql.org/docs/current/errcodes-appendix.html
+	  psql_command "ROLLBACK;"
+	  continue 2;  # restart transaction at first query
+	  ;;
+	*)
+	  # rollback and stop
+	  err=$(psql_command '\echo :LAST_ERROR_MESSAGE');
+	  echo 1>&2 "SQL error: $sqlstate $err";
+	  psql_command "ROLLBACK;"
+	  return
+	  ;;
+      esac
+    done
+    psql_command "COMMIT;"
+    break;
+  done
+}
