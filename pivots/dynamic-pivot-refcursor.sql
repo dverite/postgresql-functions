@@ -6,10 +6,30 @@
  will be automatically assigned.
  See https://postgresql.verite.pro/blog/2018/06/19/crosstab-pivot.html
  for a lot of context about this function.
+
+  Example usage:
+    CREATE TABLE tmp1 (row_id, key, val) AS
+    VALUES
+    (1, 'a', 1),
+    (1, 'b', 2),
+    (2, 'a', 3),
+    (2, 'b', 4);
+
+    BEGIN;
+
+    SELECT dynamic_pivot(
+    'select row_id, key, val from tmp1',
+    'select distinct key from tmp1',
+    'tmpcur');
+
+     FETCH ALL FROM "tmpcur";
+
+     COMMIT;
+
 */
 CREATE FUNCTION dynamic_pivot(central_query text,
-			      headers_query text,
-			      INOUT cname refcursor default null)
+                              headers_query text,
+                              INOUT cname refcursor default null)
  RETURNS refcursor AS
 $$
 DECLARE
