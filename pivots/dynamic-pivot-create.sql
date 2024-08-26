@@ -4,14 +4,29 @@
  as the 2nd parameter.
  3rd parameter: name of the table or view
  4th parameter: object type:
-   'v':view, 'tv': temp view, 't': table, 'tt': temp table
+   'v':view, 'tv': temp view, 't': table, 'tt': temp table, 'm': materialized view
 
  See https://postgresql.verite.pro/blog/2018/06/19/crosstab-pivot.html
  for a lot of context about this function.
+
+ Example usage:
+    CREATE TABLE tmp1 (row_id, key, kay_value) AS
+    VALUES
+    (1, 'a', 1),
+    (1, 'b', 2),
+    (2, 'a', 3),
+    (2, 'b', 4);
+
+    SELECT dynamic_pivot_create(
+    'select row_id, key, kay_value from tmp1',
+    'select distinct key from tmp1',
+    'public.m_tmp1', 'm');
 */
-CREATE OR REPLACE FUNCTION dynamic_pivot(central_query text, headers_query text,
-   obj_name text, obj_type text default 'tv')
- RETURNS void AS
+CREATE OR REPLACE FUNCTION dynamic_pivot_create(central_query text,
+                                                headers_query text,
+                                                obj_name text,
+                                                obj_type text default 'tv')
+RETURNS void AS
 $$
 DECLARE
   left_column text;
@@ -48,10 +63,14 @@ BEGIN
   END LOOP;
 
   query := format('CREATE %s %I AS SELECT %I %s FROM (select *,row_number() over() as rn from (%s) AS _c) as _d GROUP BY %I order by min(rn)',
-           case obj_type when 't'  then 'TABLE'
+           case obj_type
+             when 't'  then 'TABLE'
 			 when 'tt' then 'TEMP TABLE'
 			 when 'v'  then 'VIEW'
 			 when 'tv' then 'TEMP VIEW'
+             when 'm'  then 'MATERIALIZED VIEW'
+             when 'mv' then 'MATERIALIZED VIEW'
+             else 'VIEW'
            end,
            obj_name,
            left_column,
