@@ -5,7 +5,7 @@
 # Pass psql arguments
 function psql_coproc
 {
-    coproc PSQL { psql $1 ; } 
+    coproc PSQL { psql "$@" ; }
 }
 
 function get_uuid

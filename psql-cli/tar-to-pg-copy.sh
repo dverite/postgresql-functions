@@ -10,7 +10,7 @@ set -e
 
 source psql-coproc-functions.sh
 
-psql_coproc "-AtX -v ON_ERROR_STOP=1 --single-transaction"
+psql_coproc -AtX -v ON_ERROR_STOP=1 --single-transaction
 
 fifo_names="$(mktemp -u)-$(get_uuid)"
 mkfifo -m 0600 $fifo_names
