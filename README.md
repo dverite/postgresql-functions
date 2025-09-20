@@ -52,6 +52,9 @@ Perl s// operator, in a single pass.
 Each string in the first array is replaced by the element at the same
 index in the second array.
 
+## strings/unicode_versions
+A plpgsql function finding the Unicode version supported by each locale provider, using regular expressions.
+
 ## strings/utf8_truncate
 Truncate an UTF-8 string to a given number of bytes, respecting the
 constraint that any multibyte sequence at the end must be complete.
