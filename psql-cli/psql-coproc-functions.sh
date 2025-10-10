@@ -49,6 +49,7 @@ function psql_command
 function psql_quit
 {
     echo '\q' >&${PSQL[1]}
+    if [[ ! -z "$PSQL_PID" ]]; then wait "$PSQL_PID"; fi
 }
 
 # Takes a list of queries to run in a transaction
